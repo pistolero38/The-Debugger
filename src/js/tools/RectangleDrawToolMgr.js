@@ -49,7 +49,14 @@ const RectangleDrawToolMgr = (function() {
 		 */
 		onMouseMove(pEvent) {
 			if (this.rect !== null) {
-				this.sceneView.scene.style('cursor', 'crosshair');
+				
+				if (this.sceneView.scene.style('cursor') !== 'crosshair') {
+					// trick to change cursor in chrome
+					setTimeout(function() {
+						this.sceneView.scene.style('cursor', 'crosshair');
+					}.bind(this), 10);
+				}
+				
 				const width = Math.abs(this.sceneView.mouse.x - this.mouseStart.x);
 				const height = Math.abs(this.sceneView.mouse.y - this.mouseStart.y);
 
