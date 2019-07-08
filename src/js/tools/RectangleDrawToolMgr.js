@@ -3,6 +3,9 @@
  */
 const RectangleDrawToolMgr = (function() {
 	
+	/** in ms. */
+	const RORATION_DURATION = 1000;
+	
 	class RectangleDrawToolMgrClass extends AToolMgr {
 
 		/**
@@ -49,14 +52,7 @@ const RectangleDrawToolMgr = (function() {
 		 */
 		onMouseMove(pEvent) {
 			if (this.rect !== null) {
-				
-				if (this.sceneView.scene.style('cursor') !== 'crosshair') {
-					// trick to change cursor in chrome
-					setTimeout(function() {
-						this.sceneView.scene.style('cursor', 'crosshair');
-					}.bind(this), 10);
-				}
-				
+
 				const width = Math.abs(this.sceneView.mouse.x - this.mouseStart.x);
 				const height = Math.abs(this.sceneView.mouse.y - this.mouseStart.y);
 
@@ -81,7 +77,6 @@ const RectangleDrawToolMgr = (function() {
 				}
 				
 				this.rect = null;
-				this.sceneView.scene.style('cursor', 'default');
 				console.debug("[RectangleDrawToolMgr::onMouseUp] draw finished.");
 			}
 		}
@@ -110,7 +105,10 @@ const RectangleDrawToolMgr = (function() {
 	 */
 	function createRectangle() {
 		const color = 'rgb('+NumberUtils.random(255)+','+NumberUtils.random(255)+','+NumberUtils.random(255)+')'
-			, rect = this.sceneView.scene.rect(0,0).move(this.sceneView.mouse.x, this.sceneView.mouse.y).fill(color);
+			, rect = this.sceneView.scene.rect(0,0)
+										 .move(this.sceneView.mouse.x, this.sceneView.mouse.y)
+										 .fill(color)
+										 .style('cursor', 'pointer');
 				
 		rect.on('dblclick', function(e) {
 			console.debug('dbleclick');
@@ -124,7 +122,7 @@ const RectangleDrawToolMgr = (function() {
 			this.data('rotate', true);
 			
 			// start rotate rectangle and check all the rotations are done before removing the rectangles
-			this.animate(1000, '-').rotate(360).after(function() {
+			this.animate(RORATION_DURATION, '-').rotate(360).after(function() {
 				// mark this rectangle that can be removed (rotation finished)
 				this.data('toRemove', true);
 				
